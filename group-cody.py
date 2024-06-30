@@ -1,39 +1,45 @@
 import streamlit as st
 import random
-from itertools import combinations, permutations
+from itertools import combinations
 
 def form_matches(num_players, matches_per_player, player_names):
     players = list(range(1, num_players + 1))
     random.shuffle(players)
-    matches = {player: set() for player in players}
-    
+    matches = {player: [] for player in players}
+
     # Randomly assign player numbers to names
     player_numbers = dict(zip(player_names, players))
-    
-    # Generate all possible pairs
-    possible_pairs = list(permutations(players, 2))
-    random.shuffle(possible_pairs)
-    
-    for player1, player2 in possible_pairs:
-        if len(matches[player1]) < matches_per_player and len(matches[player2]) < matches_per_player:
-            matches[player1].add(player2)
-            matches[player2].add(player1)
-    
-    # Ensure all players have the correct number of matches
+
+    # Assign opponents to players
     for player in players:
-        if len(matches[player]) != matches_per_player:
-            st.error(f"Player {player} does not have exactly {matches_per_player} matches. Adjust the constraints.")
-            return
-    
+        opponents = list(players)
+        opponents.remove(player)
+        opponent_combinations = list(combinations(opponents, matches_per_player))
+        random.shuffle(opponent_combinations)
+
+        for combination in opponent_combinations:
+            valid = True
+            for opponent in combination:
+                if player in matches[opponent] or len(matches[opponent]) >= matches_per_player:
+                    valid = False
+                    break
+
+            if valid:
+                for opponent in combination:
+                    matches[player].append(opponent)
+                    matches[opponent].append(player)
+                break
+
     # Display matches with player numbers in order
     ordered_matches = sorted(matches.items())
     for player, opponents in ordered_matches:
         st.write(f"Player {player} vs {', '.join(map(str, sorted(opponents)))}")
-    
+
     # Display legend matching player numbers to names
     st.write("\nPlayer Legend:")
     for name, number in sorted(player_numbers.items(), key=lambda x: x[1]):
         st.write(f"Player {number} = {name}")
+
 
 def main():
     st.title("Match Formation")
@@ -54,7 +60,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 # Here's how the updated code works:
