@@ -2,18 +2,27 @@ import streamlit as st
 import random
 from itertools import combinations
 
-def form_matches(num_players, matches_per_player):
+def form_matches(num_players, matches_per_player, player_names):
     players = list(range(1, num_players + 1))
     random.shuffle(players)
     matches = {}
+
+    # Randomly assign player numbers to names
+    player_numbers = dict(zip(player_names, players))
 
     for player in players:
         opponents = list(players)
         opponents.remove(player)
         matches[player] = random.sample(opponents, matches_per_player)
 
+    # Display matches with player numbers
     for player, opponents in matches.items():
         st.write(f"Player {player} vs {', '.join(map(str, opponents))}")
+
+    # Display legend matching player numbers to names
+    st.write("\nPlayer Legend:")
+    for name, number in player_numbers.items():
+        st.write(f"Player {number} = {name}")
 
 def main():
     st.title("Match Formation")
@@ -21,11 +30,16 @@ def main():
     num_players = st.number_input("Enter the number of players", min_value=2, step=1)
     matches_per_player = st.number_input("Enter the number of matches per player", min_value=1, max_value=num_players - 1, step=1)
 
-    if st.button("Form Matches"):
-        if matches_per_player > num_players // 2:
-            st.warning("The number of matches per player should not exceed half the total number of players.")
-        else:
-            form_matches(num_players, matches_per_player)
+    player_names = st.text_area("Enter player names (one per line)").split("\n")
+
+    if len(player_names) != num_players:
+        st.warning(f"Please enter exactly {num_players} player names.")
+    else:
+        if st.button("Form Matches"):
+            if matches_per_player > num_players // 2:
+                st.warning("The number of matches per player should not exceed half the total number of players.")
+            else:
+                form_matches(num_players, matches_per_player, player_names)
 
 if __name__ == "__main__":
     main()
