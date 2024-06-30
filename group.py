@@ -15,13 +15,14 @@ def form_matches(num_players, matches_per_player, player_names):
         opponents.remove(player)
         matches[player] = random.sample(opponents, matches_per_player)
 
-    # Display matches with player numbers
-    for player, opponents in matches.items():
+    # Display matches with player numbers in order
+    ordered_matches = sorted(matches.items())
+    for player, opponents in ordered_matches:
         st.write(f"Player {player} vs {', '.join(map(str, opponents))}")
 
     # Display legend matching player numbers to names
     st.write("\nPlayer Legend:")
-    for name, number in player_numbers.items():
+    for name, number in sorted(player_numbers.items(), key=lambda x: x[1]):
         st.write(f"Player {number} = {name}")
 
 def main():
@@ -43,7 +44,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 # Here's how the updated code works:
