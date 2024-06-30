@@ -5,25 +5,35 @@ from itertools import combinations
 def form_matches(num_players, matches_per_player, player_names):
     players = list(range(1, num_players + 1))
     random.shuffle(players)
-    matches = {}
+    matches = {player: [] for player in players}
 
     # Randomly assign player numbers to names
     player_numbers = dict(zip(player_names, players))
 
+    # Assign opponents to players
     for player in players:
         opponents = list(players)
         opponents.remove(player)
-        matches[player] = random.sample(opponents, matches_per_player)
+        random.shuffle(opponents)
+
+        for opponent in opponents[:matches_per_player]:
+            if player not in matches[opponent] and len(matches[opponent]) < matches_per_player:
+                matches[player].append(opponent)
+                matches[opponent].append(player)
+
+            if len(matches[player]) == matches_per_player:
+                break
 
     # Display matches with player numbers in order
     ordered_matches = sorted(matches.items())
     for player, opponents in ordered_matches:
-        st.write(f"Player {player} vs {', '.join(map(str, opponents))}")
+        st.write(f"Player {player} vs {', '.join(map(str, sorted(opponents)))}")
 
     # Display legend matching player numbers to names
     st.write("\nPlayer Legend:")
     for name, number in sorted(player_numbers.items(), key=lambda x: x[1]):
         st.write(f"Player {number} = {name}")
+
 
 def main():
     st.title("Match Formation")
