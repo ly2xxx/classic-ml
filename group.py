@@ -14,26 +14,42 @@ def form_matches(num_players, matches_per_player, player_names):
     possible_pairs = list(permutations(players, 2))
     random.shuffle(possible_pairs)
     
-    for player1, player2 in possible_pairs:
-        if len(matches[player1]) < matches_per_player and len(matches[player2]) < matches_per_player:
-            matches[player1].add(player2)
-            matches[player2].add(player1)
+    max_retries = 100  # Maximum number of retries
+    retries = 0
     
-    # Ensure all players have the correct number of matches
-    for player in players:
-        if len(matches[player]) != matches_per_player:
-            st.error(f"Player {player} does not have exactly {matches_per_player} matches. Adjust the constraints.")
-            return
+    while retries < max_retries:
+        # Reset matches
+        matches = {player: set() for player in players}
+        
+        for player1, player2 in possible_pairs:
+            if len(matches[player1]) < matches_per_player and len(matches[player2]) < matches_per_player:
+                matches[player1].add(player2)
+                matches[player2].add(player1)
+        
+        # Check if all players have the correct number of matches
+        all_players_matched = True
+        for player in players:
+            if len(matches[player]) != matches_per_player:
+                all_players_matched = False
+                break
+        
+        if all_players_matched:
+            # Display matches with player numbers in order
+            ordered_matches = sorted(matches.items())
+            for player, opponents in ordered_matches:
+                st.write(f"Player {player} vs {', '.join(map(str, sorted(opponents)))}")
+            
+            # Display legend matching player numbers to names
+            st.write("\nPlayer Legend:")
+            for name, number in sorted(player_numbers.items(), key=lambda x: x[1]):
+                st.write(f"Player {number} = {name}")
+            
+            break
+        
+        retries += 1
     
-    # Display matches with player numbers in order
-    ordered_matches = sorted(matches.items())
-    for player, opponents in ordered_matches:
-        st.write(f"Player {player} vs {', '.join(map(str, sorted(opponents)))}")
-    
-    # Display legend matching player numbers to names
-    st.write("\nPlayer Legend:")
-    for name, number in sorted(player_numbers.items(), key=lambda x: x[1]):
-        st.write(f"Player {number} = {name}")
+    if retries == max_retries:
+        st.error(f"Unable to form matches with the given constraints after {max_retries} retries.")
 
 def main():
     st.title("Match Formation")
