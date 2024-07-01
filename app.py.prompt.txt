@@ -1,0 +1,30 @@
+Batman
+Superman
+Ironman
+Aquaman
+Wonder Woman
+Catwoman
+Black Widow
+Captain Marvel
+
+
+Write me a streamlit page to help with tournament match draw, the page should allows user to pick (1) number of players in a tournament (2) number of matches each player should play in the tournament. *make sure in the draw results, each player's opponents are unique in the schedule.
+
+
+For example, say we have 11 players, each player is supposed to play 4 matches. The outcome groups could be like this:
+player1 vs 2,3,4,5;
+player2 vs 1,6,7,8;
+player3 vs 1,9,10,11;
+player4 vs 1,6,9,11;
+player5 vs 1,7,10,11;
+player6 vs 2,4, 9,10;
+player7 vs 2,5,8,9;
+player8 vs 2,7,10,11;
+player9 vs 3,4,6,7;
+player10 vs 3,5,6,8;
+player11 vs 3,4,5,8;
+
+
+Excellent! that works - now below the form_matches(num_players, matches_per_player) display, give me a text area to enter the names of the players then help me randomly allocate player number to the name
+
+Can you remove the player names in square bracket since we have the "Player Number to Name Mapping:" legend it's a bit redundant to display the names in brackets

@@ -14,7 +14,7 @@ def form_matches(num_players, matches_per_player, player_names):
     possible_pairs = list(permutations(players, 2))
     random.shuffle(possible_pairs)
     
-    max_retries = 100  # Maximum number of retries
+    max_retries = 5000  # Maximum number of retries
     retries = 0
     
     while retries < max_retries:
