@@ -2,3 +2,13 @@ numpy==2.0.0
 pandas==2.2.2
 scikit-learn==1.5.0
 matplotlib==3.9.0
+
+kaggle==1.5.13
+prophet==1.1.2
+imblearn==0.0
+
+# pip install numpy==1.24.3
+# pip install pandas==1.5.3
+# pip install prophet==1.1.4
+# pip install matplotlib
+# pip install kaggle
